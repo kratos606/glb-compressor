@@ -29,17 +29,17 @@ class GLBModelOptimizationService
         }
 
         // Generate a unique output path in the 'optimized-models' directory
-        $outputPath = 'public/optimized-models/' . Str::uuid() . '-optimized.glb';
-        $absoluteOutputPath = storage_path('app/' . $outputPath);
+        $outputPath = 'optimized-models/' . Str::uuid() . '-optimized.glb';
+	$absoluteInputPath = Storage::disk('public')->path($inputPath); // Adjusted line
 
-        // Resolve the absolute input path correctly
-        $absoluteInputPath = storage_path('app/' . $inputPath);
-        if (!file_exists($absoluteInputPath) && !str_starts_with($inputPath, '/')) {
-            $absoluteInputPath = $inputPath; // Assume absolute path provided
-            if (!file_exists($absoluteInputPath)) {
-                throw new \Exception("Input GLB model file not found at path: {$inputPath}");
-            }
-        }
+	\Log::info("Resolved input path: {$absoluteInputPath}"); // Debug log
+
+	$absoluteOutputPath = Storage::disk('public')->path($outputPath);
+
+	// Ensure directory exists
+        Storage::disk('public')->makeDirectory(dirname($outputPath));
+
+        \Log::info("Output path: {$absoluteOutputPath}");
 
         // Build the gltf-transform optimize command (directly call)
         $command = [

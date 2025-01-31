@@ -27,7 +27,7 @@ class ModelController extends Controller
         ]);
 
         $uploadedFile = $request->file('modelFile');
-        $originalPath = $uploadedFile->store('public/models');
+	$originalPath = $uploadedFile->store('models', 'public');
 
         $optimizedPath = null;
         try {
